@@ -13,6 +13,7 @@ const tasksToDoNumber = document.querySelector(".tasks-todo-number");
 const createElements = async () => {
 
   const {tasks} = await fetchedAllElements();
+
   listContainer.innerText = '';
 
   tasks.forEach(({name, completed, id}) => {
@@ -34,6 +35,8 @@ const createElements = async () => {
     handleTaskDisplay(completed, clonedItem, textItem, checkedBtn);
     listContainer.appendChild(clonedItem);
   });
+  showTasksNumber(tasks);
+  showToDoTasksNumber(tasks);
 };
 
 const fetchedAllElements = async () => {
@@ -65,8 +68,6 @@ const confirmTask = async e => {
   taskConfirmBtn.disabled = true;
 
   createElements();
-  showTasksNumber();
-  showToDoTasksNumber();
 };
 
 const handleTaskDisplay = (completed, liElement, textElement, checkBtn) => {
@@ -126,7 +127,6 @@ const checkTask = async ({target}) => {
       'Content-Type': "application/json"
     }
   });
-  showToDoTasksNumber();
   createElements();
 };
 
@@ -135,28 +135,20 @@ const deleteTask = async ({target}) => {
   await fetch(`/api/v1/tasks/${id}`, {
     method: "DELETE",
   });
-  showTasksNumber();
-  showToDoTasksNumber();
   createElements();
-
 };
 
-
-const showToDoTasksNumber = async () => {
-  const {tasks} = await fetchedAllElements();
+const showToDoTasksNumber = (tasks) => {
   const toDoNumber = tasks.filter(el => !el.completed);
   tasksToDoNumber.innerText = `Tasks To Do: ${Number(toDoNumber.length)}`;
 };
 
-const showTasksNumber = async () => {
-  const {tasks} = await fetchedAllElements();
+const showTasksNumber = (tasks) => {
   tasksNumber.innerText = `All Tasks: ${Number(tasks.length)}`;
 };
 
 // const searchTask = () => {
 // };
-showTasksNumber();
-showToDoTasksNumber();
 createElements();
 
 
