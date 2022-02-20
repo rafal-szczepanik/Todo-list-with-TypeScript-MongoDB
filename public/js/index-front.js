@@ -9,13 +9,26 @@ const formTaskId = document.querySelector('.task-id');
 const textArea = document.querySelector('textarea');
 const tasksNumber = document.querySelector(".tasks-number");
 const tasksToDoNumber = document.querySelector(".tasks-todo-number");
+const searchBar = document.querySelector('.search');
 
-const createElements = async () => {
+const fetchedAllElements = async () => {
+  const response = await fetch('/api/v1/tasks/');
+  const {tasks} = await response.json();
+  return tasks;
+};
 
-  const {tasks} = await fetchedAllElements();
+const fetchedElement = async (id) => {
+  const response = await fetch(`/api/v1/tasks/${id}`);
+  return await response.json();
+};
 
+const createAndDisplayElements = async (fetchedTasks) => {
+  const tasks = (await fetchedTasks());
+  createElements(tasks);
+};
+
+const createElements = (tasks) => {
   listContainer.innerText = '';
-
   tasks.forEach(({name, completed, id}) => {
     const clonedItem = listItem.cloneNode(true);
     const textItem = clonedItem.firstChild;
@@ -39,14 +52,6 @@ const createElements = async () => {
   showToDoTasksNumber(tasks);
 };
 
-const fetchedAllElements = async () => {
-  const response = await fetch('/api/v1/tasks');
-  return await response.json();
-};
-const fetchedElement = async (id) => {
-  const response = await fetch(`api/v1/tasks/${id}`);
-  return await response.json();
-};
 
 const disableHandler = ({target}) => {
   taskConfirmBtn.disabled = !target.value.length;
@@ -67,7 +72,7 @@ const confirmTask = async e => {
   inputValue.value = "";
   taskConfirmBtn.disabled = true;
 
-  createElements();
+  createAndDisplayElements(fetchedAllElements);
 };
 
 const handleTaskDisplay = (completed, liElement, textElement, checkBtn) => {
@@ -96,7 +101,7 @@ const editTask = async (e) => {
   });
   editTaskWindow.classList.add('hidden');
   textArea.value = "";
-  createElements();
+  createAndDisplayElements(fetchedAllElements);
 };
 
 
@@ -127,7 +132,7 @@ const checkTask = async ({target}) => {
       'Content-Type': "application/json"
     }
   });
-  createElements();
+  createAndDisplayElements(fetchedAllElements);
 };
 
 const deleteTask = async ({target}) => {
@@ -135,8 +140,18 @@ const deleteTask = async ({target}) => {
   await fetch(`/api/v1/tasks/${id}`, {
     method: "DELETE",
   });
-  createElements();
+  createAndDisplayElements(fetchedAllElements);
 };
+
+const searchTask = async ({target}) => {
+  listContainer.innerText = '';
+  const name = target.value;
+
+  let tasks = await fetchedAllElements();
+  tasks = tasks.filter(task => task.name.startsWith(name));
+  createElements(tasks);
+};
+
 
 const showToDoTasksNumber = (tasks) => {
   const toDoNumber = tasks.filter(el => !el.completed);
@@ -147,11 +162,11 @@ const showTasksNumber = (tasks) => {
   tasksNumber.innerText = `All Tasks: ${Number(tasks.length)}`;
 };
 
-// const searchTask = () => {
-// };
-createElements();
-
 
 inputValue.addEventListener('keyup', disableHandler);
 taskConfirmForm.addEventListener('submit', confirmTask);
 form.addEventListener('submit', editTask);
+searchBar.addEventListener('input', searchTask);
+
+createAndDisplayElements(fetchedAllElements);
+
