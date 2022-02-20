@@ -10,9 +10,6 @@ export const getAllTasks = asyncWrapper(async (req: Request, res: Response) => {
         .status(200)
         .json({tasks});
     // .json({status: "success", data: {tasks}, nbHits: tasks.length});
-
-    //   .status(500)
-    //   .json({msg: err});
 });
 
 export const getOneTask = asyncWrapper(async (req: Request, res: Response, next) => {
@@ -65,7 +62,11 @@ export const deleteTask = asyncWrapper(async (req: Request, res: Response) => {
     }
     res
         .status(200)
-        // .json({taskToDelete})
-        // .end();
         .json({task: null, status: 'success'});
 });
+
+
+
+
+
+

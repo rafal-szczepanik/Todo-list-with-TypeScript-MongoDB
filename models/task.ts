@@ -1,7 +1,6 @@
-import mongoose from 'mongoose';
-import {Schema} from 'mongoose';
+import {Schema, model, Document} from 'mongoose';
 
-export interface IUser extends mongoose.Document {
+export interface IUser extends Document {
     id: string;
     name: string;
     completed: boolean
@@ -20,4 +19,4 @@ export const TaskSchema = new Schema({
     },
 });
 
-export const Task = mongoose.model<IUser>('Task', TaskSchema);
+export const Task = model<IUser>('Task', TaskSchema);

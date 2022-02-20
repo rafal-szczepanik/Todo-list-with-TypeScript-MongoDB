@@ -13,7 +13,7 @@ export class TaskRecord {
     }
 
     static async getAll(): Promise<TaskRecord[]> {
-        const tasks = await Task.find({}) as TaskRecord[];
+        const tasks = await Task.find() as TaskRecord[];
         return tasks.map(task => new TaskRecord(task));
     }
 

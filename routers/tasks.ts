@@ -1,5 +1,11 @@
 import {Router} from 'express';
-import {getAllTasks, createTask, deleteTask, updateTask, getOneTask} from '../controllers/tasks-controllers';
+import {
+    getAllTasks,
+    createTask,
+    deleteTask,
+    updateTask,
+    getOneTask,
+} from '../controllers/tasks-controllers';
 
 export const taskRouter = Router();
 
@@ -8,7 +14,7 @@ taskRouter
     .post('/', createTask)
     .get('/:id', getOneTask)
     .patch('/:id', updateTask)
-    .delete('/:id', deleteTask);
+    .delete('/:id', deleteTask)
 
 // taskRouter.route('/').get(getAllTasks).post(createTask)
 // taskRouter.route('/:id').get(getOneTask).patch(updateTask).delete(deleteTask);
